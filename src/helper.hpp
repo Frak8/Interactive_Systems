@@ -29,6 +29,7 @@ struct PillSchedule {
     String pill_name;
     int quantity;
     int schedule_id;
+    int status;  // 1.idle , 2.waiting for push button , 3.missed, 4.taken
     String tank;
     String time;
 };

@@ -33,18 +33,21 @@ String sendGetRequest(WiFiClient client, const char* endpoint)
 
 
 void rtcBegin()
-{
+{   
     Wire.begin(RTC_SDA, RTC_SCL);
-
+    delay(10);
     if (!rtc.begin()) 
     {
-        while (1);
-        delay(10);
+        while (1)
+        {
+            delay(500);
+            Serial.println("RTC error");
+        }
     }
-
     if (rtc.lostPower()) 
     {
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+
     }
 }
 
@@ -108,23 +111,44 @@ if (server_Status()) {
         if (strcmp(doc["status"], "success") != 0) {
             return;
         }
-
-        scheduleList.clear();
         JsonArray pills = doc["upcoming_pills"].as<JsonArray>();
-        for (JsonObject pill : pills) {
-            PillSchedule schedule;
-            schedule.pill_name = pill["pill_name"].as<String>();
-            schedule.quantity = pill["quantity"];
-            schedule.schedule_id = pill["schedule_id"];
-            schedule.tank = pill["tank"].as<String>();
-            schedule.time = pill["time"].as<String>();
-            scheduleList.push_back(schedule);
+ for (JsonObject pill : pills) {
+            bool exists = false;
+            int schedule_id = pill["schedule_id"];
+
+            for (auto& existingSchedule : scheduleList) {
+                if (existingSchedule.schedule_id == schedule_id) {
+                    // Update all fields except status
+                    existingSchedule.pill_name = pill["pill_name"].as<String>();
+                    existingSchedule.quantity = pill["quantity"];
+                    existingSchedule.tank = pill["tank"].as<String>();
+                    existingSchedule.time = pill["time"].as<String>();
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists) {
+                // Create a new schedule entry if it doesn't exist
+                PillSchedule newSchedule;
+                newSchedule.pill_name = pill["pill_name"].as<String>();
+                newSchedule.quantity = pill["quantity"];
+                newSchedule.schedule_id = pill["schedule_id"];
+                newSchedule.tank = pill["tank"].as<String>();
+                newSchedule.time = pill["time"].as<String>();
+                newSchedule.status = 1;  // Default to idle
+
+                scheduleList.push_back(newSchedule);
+            }
         }
 
         Serial.println("Schedule updated:");
-        // for (const auto& schedule : scheduleList) {
-        //     Serial.println("Pill: " + schedule.pill_name + ", Quantity: " + String(schedule.quantity) + ", Time: " + schedule.time);
-        // }
+        for (const auto& schedule : scheduleList) {
+            Serial.println("Pill: " + schedule.pill_name +", Id "+schedule.schedule_id+ ", Quantity: " + String(schedule.quantity) + ", Time: " + schedule.time + ", Status: " + String(schedule.status));
+        }
+    } else {
+        Serial.println("Server is not running.");
     }
+    
 
 }
