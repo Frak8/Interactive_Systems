@@ -19,19 +19,20 @@ void Intervales_Timers()
     // 1-second interval actions
     if (now.unixtime() - last1Sec.unixtime() >= 1) {
         last1Sec = now;
-        // UPDATE LCD values 
+        // later UPDATE LCD values 
     }
 
     // 5-second interval actions
     if (now.unixtime() - last5Sec.unixtime() >= 5) {
         last5Sec = now;
         updateSchedule();    // UPDATE schdule
+        postIntakeStatus();   //
     }
 
     // 10-second interval actions
     if (now.unixtime() - last10Sec.unixtime() >= 10) {
         last10Sec = now;
-        // NO action         
+        // NO action for now maybe later          
     }
 
     // 10-minute interval actions
@@ -39,5 +40,19 @@ void Intervales_Timers()
         last10Min = now;
         // Later For Notification      
     }
+}
+
+void checkScheduleTimes()
+{
+    DateTime now = rtcNow();
+    char currentTime[6];
+    sprintf(currentTime, "%02d:%02d", now.hour(), now.minute());
+    for (auto& schedule : scheduleList) {
+        if (schedule.time == String(currentTime) && schedule.status == 1 ) {
+            // Perform actions if the current time matches the schedule time
+            schedule.status = 2;  //  set status to "waiting for push button"
+        }
+  
+      }
 }
 

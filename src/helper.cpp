@@ -167,19 +167,24 @@ if (server_Status()) {
     }
 }
 
-void postIntakeStatus() 
-{
-    for (auto& schedule : scheduleList) {
-        if (schedule.status == 3 || schedule.status == 4) {
+void postIntakeStatus() {
+    auto it = scheduleList.begin();
+    while (it != scheduleList.end()) {
+        if (it->status == 3 || it->status == 4) {
             StaticJsonDocument<200> jsonDoc;
-            jsonDoc["intake_status"] = (schedule.status == 4) ? "taken" : "missed";
-            jsonDoc["schedule_id"] = schedule.schedule_id;
+            jsonDoc["intake_status"] = (it->status == 4) ? "taken" : "missed";
+            jsonDoc["schedule_id"] = it->schedule_id;
 
             String jsonString;
             serializeJson(jsonDoc, jsonString);
 
             String response = sendPostRequest(client, "/api/logs", jsonString);
             Serial.println(response);
+
+            // Remove the schedule from the list
+            it = scheduleList.erase(it);
+        } else {
+            ++it;
         }
     }
-}   
+}

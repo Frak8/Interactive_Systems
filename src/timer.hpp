@@ -8,4 +8,5 @@ extern DateTime last10Sec;
 extern DateTime last10Min;
 void initTimers();
 void Intervales_Timers();
+void checkScheduleTimes();
 #endif

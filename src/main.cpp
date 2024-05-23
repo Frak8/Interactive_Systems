@@ -31,6 +31,7 @@ void setup() {
 void loop() {
     // Your code here
     Intervales_Timers();
+    checkScheduleTimes();
     delay(100);
 }
 
