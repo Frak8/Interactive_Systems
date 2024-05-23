@@ -7,13 +7,12 @@ static int counter = 0 ;
 
 
 void setup() {
-    pinMode(BUZZER, OUTPUT);
     Serial.begin(9600);  //init serial port
-
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
     }
+    servoSetup();
     Serial.println();
     Serial.println("client connect!");
 
@@ -32,6 +31,6 @@ void loop() {
     // Your code here
     Intervales_Timers();
     checkScheduleTimes();
-    delay(100);
+    // servoSweep("b");
 }
 

@@ -7,6 +7,8 @@
 
 RTC_PCF8563 rtc;
 WiFiClient client; 
+Servo Servo_TankA;
+Servo Servo_TankB;
 std::vector<PillSchedule> scheduleList;
 
 String sendGetRequest(WiFiClient client, const char* endpoint)
@@ -186,5 +188,26 @@ void postIntakeStatus() {
         } else {
             ++it;
         }
+    }
+}
+
+void servoSetup()
+{
+    Servo_TankA.attach(ServoA,SERVO_COLIB_START,SERVO_COLIB_END);
+    Servo_TankB.attach(ServoB,SERVO_COLIB_START,SERVO_COLIB_END);
+    Servo_TankA.write(SERVO_START_ANG);
+    Servo_TankB.write(SERVO_START_ANG);
+}
+void servoSweep(String Tank)
+{   
+    if(Tank=="a")
+    {
+        
+            Servo_TankA.write(SERVO_END_ANG);  // Move servo to `pos` degrees
+        
+    }
+        if(Tank=="b")
+    {      
+            Servo_TankB.write(SERVO_END_ANG);  // Move servo to `pos` degrees
     }
 }

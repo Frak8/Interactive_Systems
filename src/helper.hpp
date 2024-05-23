@@ -8,16 +8,26 @@
 #include <RTClib.h>
 #include <SPI.h>
 #include <vector>
+#include <Servo.h>
 
 // port define 
-#define BUZZER D4
+
 #define RTC_SCL D1
 #define RTC_SDA D2
 #define Introupt_RTC D3
+#define BUZZER D4
+#define ServoA D7
+#define ServoB D8
 #define LIST_UPDATE 3
+#define SERVO_START_ANG 0
+#define SERVO_END_ANG 180
+#define SERVO_COLIB_START 500
+#define SERVO_COLIB_END 2500
 
 
 extern WiFiClient client;
+extern Servo Servo_TankA;
+extern Servo Servo_TankB;
 extern const char* ssid;
 extern const char* password;
 extern const char* serverIP;
@@ -47,4 +57,6 @@ void rtcSyncServer();
 bool server_Status();
 void updateSchedule();
 void postIntakeStatus();
+void servoSetup();
+void servoSweep(String Tank);
 #endif // HELPER_H
