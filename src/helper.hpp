@@ -9,11 +9,14 @@
 #include <SPI.h>
 #include <vector>
 
-
+// port define 
 #define BUZZER D4
 #define RTC_SCL D1
 #define RTC_SDA D2
 #define Introupt_RTC D3
+#define LIST_UPDATE 3
+
+
 extern WiFiClient client;
 extern const char* ssid;
 extern const char* password;
@@ -43,4 +46,5 @@ void rtcAdjust(const DateTime &dt);
 void rtcSyncServer();
 bool server_Status();
 void updateSchedule();
+void postIntakeStatus();
 #endif // HELPER_H

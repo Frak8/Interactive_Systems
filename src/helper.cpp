@@ -30,18 +30,34 @@ String sendGetRequest(WiFiClient client, const char* endpoint)
 }
 
 
+String sendPostRequest(WiFiClient& client, const char* endpoint, const String& payload) {
+    HTTPClient http;
+    String url = String("http://") + serverURL + endpoint;
+    http.begin(client, url);
+    http.addHeader("Content-Type", "application/json");
 
+    int httpCode = http.POST(payload);
+    String response;
+    if (httpCode > 0) {
+        response = http.getString();
+    } else {
+        response = "POST request failed";
+    }
+
+    http.end();
+    return response;
+}
 
 void rtcBegin()
 {   
     Wire.begin(RTC_SDA, RTC_SCL);
-    delay(10);
+    delay(100);
     if (!rtc.begin()) 
     {
         while (1)
         {
             delay(500);
-            Serial.println("RTC error");
+            Serial.println("RTC error");;
         }
     }
     if (rtc.lostPower()) 
@@ -149,6 +165,21 @@ if (server_Status()) {
     } else {
         Serial.println("Server is not running.");
     }
-    
-
 }
+
+void postIntakeStatus() 
+{
+    for (auto& schedule : scheduleList) {
+        if (schedule.status == 3 || schedule.status == 4) {
+            StaticJsonDocument<200> jsonDoc;
+            jsonDoc["intake_status"] = (schedule.status == 4) ? "taken" : "missed";
+            jsonDoc["schedule_id"] = schedule.schedule_id;
+
+            String jsonString;
+            serializeJson(jsonDoc, jsonString);
+
+            String response = sendPostRequest(client, "/api/logs", jsonString);
+            Serial.println(response);
+        }
+    }
+}   

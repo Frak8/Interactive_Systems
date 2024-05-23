@@ -1,7 +1,8 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include "helper.hpp"
-DateTime lastUpdate;
+#include "timer.hpp"
+static int counter = 0 ;
 
 
 
@@ -16,26 +17,20 @@ void setup() {
     Serial.println();
     Serial.println("client connect!");
 
-   rtcBegin();                         // init rtc 
+    rtcBegin();                         // init rtc 
     rtcSyncServer();                    //sync rtc with server 
-    lastUpdate = rtcNow();              // Set the initial time for the last update
-    Serial.println(WiFi.localIP());
+    // Serial.println(WiFi.localIP());
 
     Serial.println();
-    Serial.println(sendGetRequest(client, now_time));
-    Serial.println(sendGetRequest(client, server_status));
-    Serial.println(sendGetRequest(client, upcoming_pills));
+    // Serial.println(sendGetRequest(client, now_time));
+    // Serial.println(sendGetRequest(client, server_status));
+    // Serial.println(sendGetRequest(client, upcoming_pills));
 
 }
 
 void loop() {
-    DateTime now = rtcNow();
-    if (now.unixtime() - lastUpdate.unixtime() >= 3) {  // Update every 10 seconds
-        lastUpdate = now;
-        updateSchedule();  // Update schedule
-    }
-  
     // Your code here
-    
+    Intervales_Timers();
+    delay(100);
 }
 
