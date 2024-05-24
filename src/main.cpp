@@ -8,6 +8,8 @@ static int counter = 0 ;
 
 void setup() {
     Serial.begin(9600);  //init serial port
+    pinMode(SENSOR_IR_TANKA,INPUT);
+    pinMode(SENSOR_IR_TANKB,INPUT);
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
@@ -31,6 +33,6 @@ void loop() {
     // Your code here
     Intervales_Timers();
     checkScheduleTimes();
-    // servoSweep("b");
+    ReleaseFunction();
 }
 

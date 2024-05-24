@@ -16,6 +16,8 @@
 #define RTC_SDA D2
 #define Introupt_RTC D3
 #define BUZZER D4
+#define SENSOR_IR_TANKA D5
+#define SENSOR_IR_TANKB D6
 #define ServoA D7
 #define ServoB D8
 #define LIST_UPDATE 3
@@ -23,6 +25,13 @@
 #define SERVO_END_ANG 180
 #define SERVO_COLIB_START 500
 #define SERVO_COLIB_END 2500
+#define STATUS_IDLE 1
+#define STATUS_WAITING 2
+#define STATUS_TRANSCATION 3
+#define STATUS_MISSED 4
+#define STATUS_TAKE 5
+
+
 
 
 extern WiFiClient client;
@@ -42,7 +51,7 @@ struct PillSchedule {
     String pill_name;
     int quantity;
     int schedule_id;
-    int status;  // 1.idle , 2.waiting for push button , 3.missed, 4.taken
+    int status;  // 1.idle , 2.waiting for push button , 3.transcation , 4.missed , 5.take
     String tank;
     String time;
 };
@@ -58,5 +67,5 @@ bool server_Status();
 void updateSchedule();
 void postIntakeStatus();
 void servoSetup();
-void servoSweep(String Tank);
+void ReleaseFunction();
 #endif // HELPER_H

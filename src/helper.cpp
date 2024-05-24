@@ -154,7 +154,7 @@ if (server_Status()) {
                 newSchedule.schedule_id = pill["schedule_id"];
                 newSchedule.tank = pill["tank"].as<String>();
                 newSchedule.time = pill["time"].as<String>();
-                newSchedule.status = 1;  // Default to idle
+                newSchedule.status = STATUS_IDLE;  // Default to idle
 
                 scheduleList.push_back(newSchedule);
             }
@@ -163,7 +163,24 @@ if (server_Status()) {
         Serial.println("Schedule updated:");
         for (const auto& schedule : scheduleList) {
             Serial.println("Pill: " + schedule.pill_name +", Id "+schedule.schedule_id+ ", Quantity: " + String(schedule.quantity) + ", Time: " + schedule.time + ", Status: " + String(schedule.status));
+
         }
+        //just for test
+            Serial.print("Current date and time is: ");
+            DateTime now = rtc.now();
+            Serial.print(now.year(), DEC);
+            Serial.print('/');
+            Serial.print(now.month(), DEC);
+            Serial.print('/');
+            Serial.print(now.day(), DEC);
+            Serial.print(" ");
+            Serial.print(now.hour(), DEC);
+            Serial.print(':');
+            Serial.print(now.minute(), DEC);
+            Serial.print(':');
+            Serial.print(now.second(), DEC);
+            Serial.println();
+        //
     } else {
         Serial.println("Server is not running.");
     }
@@ -172,9 +189,9 @@ if (server_Status()) {
 void postIntakeStatus() {
     auto it = scheduleList.begin();
     while (it != scheduleList.end()) {
-        if (it->status == 3 || it->status == 4) {
+        if (it->status == STATUS_MISSED || it->status == STATUS_TAKE) {
             StaticJsonDocument<200> jsonDoc;
-            jsonDoc["intake_status"] = (it->status == 4) ? "taken" : "missed";
+            jsonDoc["intake_status"] = (it->status == STATUS_TAKE) ? "taken" : "missed";
             jsonDoc["schedule_id"] = it->schedule_id;
 
             String jsonString;
@@ -198,16 +215,29 @@ void servoSetup()
     Servo_TankA.write(SERVO_START_ANG);
     Servo_TankB.write(SERVO_START_ANG);
 }
-void servoSweep(String Tank)
+
+void ReleaseFunction()
 {   
-    if(Tank=="a")
-    {
+
+
+for (auto& schedule : scheduleList)
+ {
+        if (schedule.tank == "a" && schedule.status == STATUS_WAITING ) {
+            // Perform actions if the current time matches the schedule time
+            Servo_TankA.write(SERVO_END_ANG); 
+            schedule.status = STATUS_TRANSCATION; 
+
+        }
+        if(schedule.status == STATUS_TRANSCATION)
+        {
+            if(digitalRead(SENSOR_IR_TANKA)==LOW)
+              {
+                Servo_TankA.write(SERVO_START_ANG); 
+                schedule.status = STATUS_TAKE;
+
+              }
+        }
+   }
         
-            Servo_TankA.write(SERVO_END_ANG);  // Move servo to `pos` degrees
-        
-    }
-        if(Tank=="b")
-    {      
-            Servo_TankB.write(SERVO_END_ANG);  // Move servo to `pos` degrees
-    }
+
 }
