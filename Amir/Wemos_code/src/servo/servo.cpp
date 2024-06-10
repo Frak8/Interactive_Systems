@@ -8,6 +8,28 @@ void servoSetup()
     Servo_TankA.write(SERVO_START_ANG);
     Servo_TankB.write(SERVO_START_ANG);
 }
+
+void moveToPosition(String tank, bool Valve) { //Value 0 close 1 open 
+    if (tank == "a")
+    {
+      if (Valve == 0)
+      {
+        Servo_TankA.write(SERVO_START_ANG);
+      }else
+      {Servo_TankA.write(SERVO_END_ANG);}
+    }
+    if (tank == "b")
+    {
+      if (Valve == 0)
+      {
+        Servo_TankB.write(SERVO_START_ANG);
+      }else
+      {Servo_TankB.write(SERVO_END_ANG);}
+    }
+
+}
+
+
 void ReleaseFunction()
 {   
 
@@ -16,6 +38,7 @@ for (auto& schedule : scheduleList)
  {
         if (schedule.tank == "a" && schedule.status == STATUS_WAITING ) {
             // Perform actions if the current time matches the schedule time
+            moveToPosition(schedule.tank,1);
             Servo_TankA.write(SERVO_END_ANG); 
             schedule.status = STATUS_TRANSCATION; 
 

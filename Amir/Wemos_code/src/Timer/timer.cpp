@@ -4,6 +4,7 @@ DateTime last1Sec;
 DateTime last2Sec;
 DateTime last5Sec;
 DateTime last10Sec;
+DateTime last1Min;
 DateTime last10Min;
 
 void initTimers() {
@@ -11,7 +12,9 @@ void initTimers() {
     last1Sec = now;
     last5Sec = now;
     last10Sec = now;
+    last1Min = now;
     last10Min = now;
+
 }
 
 void Intervales_Timers() 
@@ -32,6 +35,7 @@ void Intervales_Timers()
         updateSchedule();    // UPDATE schdule
         postIntakeStatus();   //
     }
+    
 
     // 10-second interval actions
     if (now.unixtime() - last10Sec.unixtime() >= 10) {
@@ -39,10 +43,16 @@ void Intervales_Timers()
         // NO action for now maybe later          
     }
 
+    // 1-Min
+    if (now.unixtime() - last1Min.unixtime() >= 60) {
+        last1Min = now;
+        rtcSyncServer();
+        // NO action for now maybe later          
+    }
+
     // 10-minute interval actions
     if (now.unixtime() - last10Min.unixtime() >= 600) {
         last10Min = now;
-        rtcSyncServer();
         // Later For Notification      
     }
 }

@@ -54,7 +54,13 @@ void rtcSyncServer()
     sscanf(time, "%d:%d:%d", &hour, &minute, &second);
     DateTime now = rtcNow();
     DateTime newTime(year, month, day, hour, minute, second);
-    rtcAdjust(newTime);
+    if (now != newTime)
+    {
+        rtcAdjust(newTime);
+        Serial.println("SYNC Time with server ");
+    }
+    
+ 
 }
 bool server_Status() {
     String jsonString = sendGetRequest(client, server_status);
@@ -93,9 +99,10 @@ if (server_Status()) {
                     existingSchedule.pill_name = pill["pill_name"].as<String>();
                     existingSchedule.quantity = pill["quantity"];
                     existingSchedule.tank = pill["tank"].as<String>();
-                    existingSchedule.time = pill["time"].as<String>();
+                    existingSchedule.time = pill["time"].as<String>();                  
                     exists = true;
                     break;
+                   
                 }
             }
             if (!exists) {
@@ -107,12 +114,20 @@ if (server_Status()) {
                 newSchedule.tank = pill["tank"].as<String>();
                 newSchedule.time = pill["time"].as<String>();
                 newSchedule.status = STATUS_IDLE;  // Default to idle
+                newSchedule.pills_released=0;
+                newSchedule.retries=0;
                 scheduleList.push_back(newSchedule);
             }
         }
         Serial.println("Schedule updated:");
         for (const auto& schedule : scheduleList) {
-            Serial.println("Pill: " + schedule.pill_name +", Id "+schedule.schedule_id+ ", Quantity: " + String(schedule.quantity) + ", Time: " + schedule.time + ", Status: " + String(schedule.status));
+            Serial.println("Pill: " + schedule.pill_name +
+            ", Id: "+schedule.schedule_id+
+            ", Quantity: " + String(schedule.quantity) +
+            ", Time: " + schedule.time + 
+            ", Status: " + String(schedule.status)+
+            ", released " + schedule.pills_released +
+            ", retries " + schedule.retries);
 
         }
             Serial.print("Current date and time is: ");
