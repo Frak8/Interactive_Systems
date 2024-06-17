@@ -34,6 +34,7 @@ void Intervales_Timers()
         last5Sec = now;
         updateSchedule();    // UPDATE schdule
         postIntakeStatus();   //
+        heartbeat();        //heartbeat
     }
     
 

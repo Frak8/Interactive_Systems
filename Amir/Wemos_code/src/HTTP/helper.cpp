@@ -164,4 +164,8 @@ void postIntakeStatus() {
     }
 }
 
-
+void heartbeat() {
+            String jsonString;
+            String response = sendPostRequest(client, "/api/heartbeat", jsonString);
+            Serial.println("Heartbeat");      
+}

@@ -24,4 +24,5 @@ void rtcSyncServer();
 bool server_Status();
 void updateSchedule();
 void postIntakeStatus();
+void heartbeat();
 #endif 
