@@ -8,8 +8,14 @@ enum ServoState {
     OPENING_SERVO,
     CLOSING_SERVO
 };
+struct SensorState {
+    bool value;                // The value to be changed
+    unsigned long lastChange;  // Timestamp of the last state change
+    bool debounceActive;       // Whether debounce is active
+};
 void servoSetup();
 void ReleaseFunction();
 void ServoTransaction(String tank);
 void handleServoMovement();
+void handleSensorInput(int sensorPin, SensorState &sensorState);
 #endif
