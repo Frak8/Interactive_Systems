@@ -35,13 +35,14 @@ void Intervales_Timers()
         updateSchedule();    // UPDATE schdule
         postIntakeStatus();   //
         heartbeat();        //heartbeat
+        
     }
     
 
     // 10-second interval actions
     if (now.unixtime() - last10Sec.unixtime() >= 10) {
         last10Sec = now;
-        // NO action for now maybe later          
+        // NO action for now maybe later 
     }
 
     // 1-Min
@@ -67,8 +68,12 @@ void checkScheduleTimes()
         if (schedule.time == String(currentTime) && schedule.status == STATUS_IDLE ) {
             // Perform actions if the current time matches the schedule time
             schedule.status = STATUS_WAITING;  //  set status to "waiting for push button"
+            //TODO
+            schedule.status = STATUS_TRANSCATION;
         }
   
       }
 }
+
+
 

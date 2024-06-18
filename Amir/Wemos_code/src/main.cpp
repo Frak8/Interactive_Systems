@@ -38,6 +38,7 @@ void loop() {
     // Your code here
     Intervales_Timers();
     checkScheduleTimes();
+    handleServoMovement();
     ReleaseFunction();
    
 }
