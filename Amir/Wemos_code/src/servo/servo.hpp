@@ -10,6 +10,7 @@ enum ServoState {
 };
 struct SensorState {
     bool value;                // The value to be changed
+    bool record_value;
     unsigned long lastChange;  // Timestamp of the last state change
     bool debounceActive;       // Whether debounce is active
 };

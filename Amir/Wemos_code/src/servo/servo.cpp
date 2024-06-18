@@ -5,8 +5,8 @@ ServoState currentState_A = IDLE;
 ServoState currentState_B = IDLE;
 unsigned long actionStartTime_A = 0;
 unsigned long actionStartTime_B = 0;
-SensorState sensorAState = { false, 0, false }; // Initialize sensor A state
-SensorState sensorBState = { false, 0, false }; // Initialize sensor B state
+SensorState sensorAState = { false, false, 0, false }; // Initialize sensor A state
+SensorState sensorBState = { false, false, 0, false }; // Initialize sensor B state
 
 void servoSetup()
 {
@@ -34,6 +34,7 @@ void ServoTransaction(String tank) {
 // Function to handle servo state transitions
 void handleServoMovement() {
     if (currentState_A == OPENING_SERVO) {
+        count_pills();
         if (millis() - actionStartTime_A >= SERVO_TRANSACTION_TIME) { 
             Servo_TankA.write(SERVO_START_ANG);
             Serial.println("Servo Tank A Close");
@@ -41,6 +42,7 @@ void handleServoMovement() {
             actionStartTime_A = millis();
         }
     } else if (currentState_B == OPENING_SERVO) {
+        count_pills();
         if (millis() - actionStartTime_B >= SERVO_TRANSACTION_TIME) { 
             Servo_TankB.write(SERVO_START_ANG);
             Serial.println("Servo Tank B Close");
@@ -50,10 +52,12 @@ void handleServoMovement() {
     } else if (currentState_A == CLOSING_SERVO) {
         if (millis() - actionStartTime_A >= SERVO_TRANSACTION_TIME) { 
             currentState_A = IDLE;
+            sensorAState.record_value=false;
         }
     } else if (currentState_B == CLOSING_SERVO) {
         if (millis() - actionStartTime_B >= SERVO_TRANSACTION_TIME) { 
             currentState_B = IDLE;
+            sensorBState.record_value=false;
         }
     }
 }
@@ -67,6 +71,12 @@ for (auto& schedule : scheduleList)
         currentState_A==IDLE &&
         schedule.pills_released < schedule.quantity) {
           ServoTransaction(schedule.tank);
+        }else if(schedule.tank == "a" && 
+        schedule.status == STATUS_TRANSCATION &&
+        currentState_A==IDLE &&
+        schedule.pills_released <= schedule.quantity)
+        {
+            schedule.status=STATUS_TAKE;
         }
 
         if (schedule.tank == "b" && 
@@ -74,6 +84,12 @@ for (auto& schedule : scheduleList)
         currentState_B==IDLE &&
         schedule.pills_released < schedule.quantity) {
           ServoTransaction(schedule.tank);
+        }else if(schedule.tank == "b" && 
+        schedule.status == STATUS_TRANSCATION &&
+        currentState_B==IDLE &&
+        schedule.pills_released <= schedule.quantity)
+        {
+          schedule.status=STATUS_TAKE;  
         }
     handleSensorInput(SENSOR_IR_TANKA, sensorAState);
     handleSensorInput(SENSOR_IR_TANKB, sensorBState);
@@ -108,6 +124,25 @@ void handleSensorInput(int sensorPin, SensorState &sensorState) {
         Serial.print(sensorPin);
         Serial.println(": Value reset to default");
     }
+}
+
+void count_pills()
+{
+    
+
+    for (auto& schedule : scheduleList)
+    {
+         if(sensorAState.value==true && sensorAState.record_value==false && schedule.status==STATUS_TRANSCATION)
+        {
+            sensorAState.record_value=true;
+            schedule.pills_released++;
+        }
+    }
+
+
+   
+
+
 }
 
 

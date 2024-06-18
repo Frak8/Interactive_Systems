@@ -25,4 +25,5 @@ bool server_Status();
 void updateSchedule();
 void postIntakeStatus();
 void heartbeat();
+void count_pills();
 #endif 
