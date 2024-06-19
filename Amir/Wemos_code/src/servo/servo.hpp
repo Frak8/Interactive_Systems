@@ -13,6 +13,7 @@ struct SensorState {
     bool record_value;
     unsigned long lastChange;  // Timestamp of the last state change
     bool debounceActive;       // Whether debounce is active
+    int last_qty_values;
 };
 void servoSetup();
 void ReleaseFunction();

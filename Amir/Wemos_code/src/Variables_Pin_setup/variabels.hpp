@@ -26,6 +26,7 @@
 #define STATUS_MISSED 4
 #define STATUS_TAKE 5
 #define STATUS_FAILED 6
+#define RETRY_NUM 3
 #define LCD_RESET "rest"
 extern WiFiClient client;
 extern const char* ssid;

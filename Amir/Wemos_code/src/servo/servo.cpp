@@ -5,8 +5,8 @@ ServoState currentState_A = IDLE;
 ServoState currentState_B = IDLE;
 unsigned long actionStartTime_A = 0;
 unsigned long actionStartTime_B = 0;
-SensorState sensorAState = { false, false, 0, false }; // Initialize sensor A state
-SensorState sensorBState = { false, false, 0, false }; // Initialize sensor B state
+SensorState sensorAState = { false, false, 0, false, 0 }; // Initialize sensor A state
+SensorState sensorBState = { false, false, 0, false, 0 }; // Initialize sensor B state
 
 void servoSetup()
 {
@@ -50,12 +50,16 @@ void handleServoMovement() {
             actionStartTime_B = millis();
         }
     } else if (currentState_A == CLOSING_SERVO) {
+        
         if (millis() - actionStartTime_A >= SERVO_TRANSACTION_TIME) { 
+            count_pills();
             currentState_A = IDLE;
             sensorAState.record_value=false;
         }
     } else if (currentState_B == CLOSING_SERVO) {
+       
         if (millis() - actionStartTime_B >= SERVO_TRANSACTION_TIME) { 
+            count_pills();
             currentState_B = IDLE;
             sensorBState.record_value=false;
         }
@@ -129,15 +133,57 @@ void handleSensorInput(int sensorPin, SensorState &sensorState) {
 void count_pills()
 {
     
-
-    for (auto& schedule : scheduleList)
+    if(currentState_A == OPENING_SERVO || currentState_B == OPENING_SERVO )
     {
-         if(sensorAState.value==true && sensorAState.record_value==false && schedule.status==STATUS_TRANSCATION)
-        {
-            sensorAState.record_value=true;
-            schedule.pills_released++;
+         for (auto& schedule : scheduleList)
+         {
+            if(sensorAState.value==true &&
+             sensorAState.record_value==false && 
+             schedule.status==STATUS_TRANSCATION&&
+             schedule.tank=="a")
+            {
+                sensorAState.record_value=true;
+                sensorAState.last_qty_values=schedule.pills_released;
+                schedule.pills_released++;
+            }
+            if(sensorBState.value==true &&
+             sensorBState.record_value==false &&
+              schedule.status==STATUS_TRANSCATION&&
+              schedule.tank=="b")
+            {
+                sensorBState.record_value=true;
+                sensorBState.last_qty_values=schedule.pills_released;
+                schedule.pills_released++;
+            }
         }
     }
+    else if(currentState_A == CLOSING_SERVO || currentState_B == CLOSING_SERVO)
+    {
+         for (auto& schedule : scheduleList)
+        {
+            if(schedule.tank=="a" &&
+             schedule.status== STATUS_TRANSCATION && 
+             sensorBState.last_qty_values==schedule.pills_released);
+              {schedule.retries++;
+              if(schedule.retries >= RETRY_NUM)
+              {
+               schedule.status = STATUS_FAILED; 
+              }
+              }  
+
+            if(schedule.tank=="b" &&
+             schedule.status== STATUS_TRANSCATION && 
+             sensorBState.last_qty_values==schedule.pills_released);
+              {schedule.retries++;
+              if(schedule.retries >= RETRY_NUM)
+              {
+               schedule.status = STATUS_FAILED; 
+              }
+              } 
+
+        }
+    }
+   
 
 
    
