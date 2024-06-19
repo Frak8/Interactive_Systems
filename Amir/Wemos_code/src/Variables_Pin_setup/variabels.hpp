@@ -7,8 +7,8 @@
 #include "../LCD/LCD.hpp"
 #define RTC_SCL D1
 #define RTC_SDA D2
-#define RX_LCD D4
 #define TX_LCD D3
+#define RX_LCD D4
 #define SENSOR_IR_TANKA D5
 #define SENSOR_IR_TANKB D6
 #define ServoA D7
@@ -26,7 +26,7 @@
 #define STATUS_MISSED 4
 #define STATUS_TAKE 5
 #define STATUS_FAILED 6
-#define RETRY_NUM 3
+#define RETRY_NUM 8
 #define LCD_RESET "rest"
 extern WiFiClient client;
 extern const char* ssid;

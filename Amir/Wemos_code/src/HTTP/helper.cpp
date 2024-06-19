@@ -148,9 +148,15 @@ if (server_Status()) {
 void postIntakeStatus() {
     auto it = scheduleList.begin();
     while (it != scheduleList.end()) {
-        if (it->status == STATUS_MISSED || it->status == STATUS_TAKE) {
+        if (it->status == STATUS_MISSED || it->status == STATUS_TAKE || it->status == STATUS_FAILED) {
             StaticJsonDocument<200> jsonDoc;
-            jsonDoc["intake_status"] = (it->status == STATUS_TAKE) ? "taken" : "missed";
+            if (it->status == STATUS_TAKE) {
+                jsonDoc["intake_status"] = "taken";
+            } else if (it->status == STATUS_MISSED) {
+                jsonDoc["intake_status"] = "missed";
+            } else if (it->status == STATUS_FAILED) {
+               jsonDoc["intake_status"] = "empty"; 
+            }
             jsonDoc["schedule_id"] = it->schedule_id;
             String jsonString;
             serializeJson(jsonDoc, jsonString);

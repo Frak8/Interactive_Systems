@@ -6,6 +6,8 @@
 #include "Timer/timer.hpp"
 #include "Variables_Pin_setup/variabels.hpp"
 #include "servo/servo.hpp"
+#include <Nextion.h>
+#include <NextionPage.h>
 void initLCD();
 void LCD_Command(const String &command);
 void LCD_Update();

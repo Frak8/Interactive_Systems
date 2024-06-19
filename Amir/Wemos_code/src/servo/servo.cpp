@@ -78,7 +78,7 @@ for (auto& schedule : scheduleList)
         }else if(schedule.tank == "a" && 
         schedule.status == STATUS_TRANSCATION &&
         currentState_A==IDLE &&
-        schedule.pills_released <= schedule.quantity)
+        schedule.pills_released >= schedule.quantity)
         {
             schedule.status=STATUS_TAKE;
         }
@@ -91,7 +91,7 @@ for (auto& schedule : scheduleList)
         }else if(schedule.tank == "b" && 
         schedule.status == STATUS_TRANSCATION &&
         currentState_B==IDLE &&
-        schedule.pills_released <= schedule.quantity)
+        schedule.pills_released >= schedule.quantity)
         {
           schedule.status=STATUS_TAKE;  
         }
@@ -159,22 +159,29 @@ void count_pills()
     }
     else if(currentState_A == CLOSING_SERVO || currentState_B == CLOSING_SERVO)
     {
+
          for (auto& schedule : scheduleList)
         {
             if(schedule.tank=="a" &&
              schedule.status== STATUS_TRANSCATION && 
-             sensorBState.last_qty_values==schedule.pills_released);
+             sensorBState.last_qty_values==schedule.pills_released&&
+             sensorBState.value==false);
               {schedule.retries++;
+               
               if(schedule.retries >= RETRY_NUM)
               {
+               
                schedule.status = STATUS_FAILED; 
               }
               }  
 
             if(schedule.tank=="b" &&
              schedule.status== STATUS_TRANSCATION && 
-             sensorBState.last_qty_values==schedule.pills_released);
-              {schedule.retries++;
+             sensorBState.last_qty_values==schedule.pills_released&&
+             sensorBState.value==false);
+              {
+                
+                schedule.retries++;
               if(schedule.retries >= RETRY_NUM)
               {
                schedule.status = STATUS_FAILED; 
