@@ -9,8 +9,11 @@
 #include "../NeoNextion/Nextion.h"
 #include "../NeoNextion/NextionPage.h"
 #include "../NeoNextion/NextionProgressBar.h"
+#include "../NeoNextion/NextionText.h"
+#include "../NeoNextion/NextionButton.h"
 void initLCD();
 void LCD_get_page();
+void Function_page5();
 extern Nextion nex;
 enum LCD_Page {
     page0,
