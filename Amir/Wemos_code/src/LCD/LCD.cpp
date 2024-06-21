@@ -1,4 +1,7 @@
 #include"LCD.hpp"
+const char* daysOfTheWeek[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+const char* monthsOfTheYear[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
 SoftwareSerial LCD_Serial(RX_LCD, TX_LCD);
 unsigned long Update_page = 0;
 LCD_Page current_lcd_page = page0;
@@ -150,6 +153,17 @@ else
         Time.setText(timeString_chr);
         delete[] timeString_chr;
 
+
+
+ String dateString = String(daysOfTheWeek[now.dayOfTheWeek()]) + " " + 
+                      (now.day() < 10 ? "0" + String(now.day()) : String(now.day())) + " " + 
+                      String(monthsOfTheYear[now.month() - 1]);
+
+  // Convert the dateString to char*
+  char* dateString_chr = new char[dateString.length() + 1];
+  strcpy(dateString_chr, dateString.c_str());
+  Date.setText(dateString_chr);       
+    delete[] dateString_chr;
 
 
 
