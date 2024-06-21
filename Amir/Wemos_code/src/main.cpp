@@ -40,9 +40,7 @@ void loop() {
     checkScheduleTimes();
     handleServoMovement();
     ReleaseFunction();
-    nex.poll();
-    LCD_get_page();
-    
+    nex.poll();  
     
    
 }

@@ -23,6 +23,7 @@ void Intervales_Timers()
     // 1-second interval actions
     if (now.unixtime() - last1Sec.unixtime() >= 1) {
         last1Sec = now;
+        LCD_get_page();
         // later UPDATE LCD values 
     }
  // 2-second interval actions

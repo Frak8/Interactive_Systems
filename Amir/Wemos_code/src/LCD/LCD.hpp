@@ -11,8 +11,12 @@
 #include "../NeoNextion/NextionProgressBar.h"
 #include "../NeoNextion/NextionText.h"
 #include "../NeoNextion/NextionButton.h"
+#include "../NeoNextion/NextionPicture.h"
+#include <cstring> 
 void initLCD();
+void convert(const std::string& str, std::function<void(char*)> callback);
 void LCD_get_page();
+void Function_page3();
 void Function_page5();
 extern Nextion nex;
 enum LCD_Page {
